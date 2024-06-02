@@ -11,34 +11,33 @@ static vector<vector<int>> destroy = {{}};
 static int cost = 0;
 
 vector<int> addToSet(vector<int> set, int num){
-    for (size_t i = 0; i < set.size(); i++){ // Changed int to size_t
-        if (num == set.at(i)){ // return as is if the number is already in the set
+    for (size_t i = 0; i < set.size(); i++){
+        if (num == set.at(i)){ 
             return set;
         }
     }
-    set.push_back(num); // add number to set and return
+    set.push_back(num);
     return set;
 }
 
-int buildToMinST(int n){ // return cost to build extra roads
-    vector<tuple<int, int, int>> edges; // tuples: cost, start, end
+int buildToMinST(int n){ 
+    vector<tuple<int, int, int>> edges; 
     vector<int> set;
     for (int i = 0; i < n-1; i++){
-        for (int j = i+1; j < n; j++){ // only top side of build graph
+        for (int j = i+1; j < n; j++){ 
             edges.push_back(make_tuple(build.at(i).at(j), i, j));
         }
     }
-    sort(edges.begin(), edges.end()); // sort the costs in ascending order
+    sort(edges.begin(), edges.end());
 
-    size_t numEdges = 0; // Changed int to size_t
-    size_t index = 0; // Changed int to size_t
+    size_t numEdges = 0;
+    size_t index = 0;
     while (numEdges < static_cast<size_t>(n-1) && index < edges.size()){
         addToSet(set, get<1>(edges.at(index)));
         addToSet(set, get<2>(edges.at(index)));
         index++;
         numEdges++;
     }
-
     return 0;
 }
 
@@ -58,16 +57,15 @@ int main(void){
     string countryString = "";
     string buildString = "";
     string destroyString = "";
-    int n = 1; // number of cities
+    int n = 1;
 
-    // read in string inputs
     cin >> countryString >> buildString >> destroyString;
     ans(countryString);
-    if (countryString.size() == 1){ // 1 country
+    if (countryString.size() == 1){
         return 0;
     }
     int indexRow = 0;
-    for (size_t i = 0; i < countryString.size(); i++){ // Changed int to size_t
+    for (size_t i = 0; i < countryString.size(); i++){
         if (countryString.at(i) == ','){
             indexRow++;
             n++;
@@ -75,20 +73,11 @@ int main(void){
             build.push_back({});
             destroy.push_back({});
         } else{
-            country.at(indexRow).push_back(countryString.at(i)-'0');
-            if (buildString.at(i) >= 'A' && buildString.at(i)<='Z' ){
-                build.at(indexRow).push_back(buildString.at(i)-'A'); // A-Z input
-            } else{
-                build.at(indexRow).push_back(buildString.at(i)-'a' + 26); // a-z input
-            }
-            if (destroyString.at(i) >= 'A' && destroyString.at(i)<='Z' ){
-                destroy.at(indexRow).push_back(destroyString.at(i)-'A'); // A-Z input
-            } else{
-                destroy.at(indexRow).push_back(destroyString.at(i)-'a' + 26); // a-z input
-            }
+            country.at(indexRow).push_back(countryString.at(i) - '0');
+            build.at(indexRow).push_back(isupper(buildString.at(i)) ? buildString.at(i) - 'A' : buildString.at(i) - 'a' + 26);
+            destroy.at(indexRow).push_back(isupper(destroyString.at(i)) ? destroyString.at(i) - 'A' : destroyString.at(i) - 'a' + 26);
         }
     }
     cost += buildToMinST(n);
-
     return 0;
 }
